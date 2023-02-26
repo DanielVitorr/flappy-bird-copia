@@ -100,7 +100,7 @@ function criaFlappyBird() {
     atualiza() {
       if(fazColisao(flappyBird, globais.chao)) {
         som_HIT.play()
-        mudaParaTela(Telas.INICIO)
+        mudaParaTela(Telas.GAMEOVER)
         return
       }
       flappyBird.velocidade = flappyBird.velocidade + flappyBird.gravidade
@@ -198,7 +198,7 @@ function criaCanos() {
         globais.placar.pontuacao += 1
       }
 
-      if(globais.flappyBird.x >= par.x) {
+      if(globais.flappyBird.x + (globais.flappyBird.largura - 2) >= par.x) {
         if(cabecaDoFlappy <= par.canoCeu.y) {
           return true
         }
@@ -225,7 +225,7 @@ function criaCanos() {
         
         if(canos.temColisaoComOFlappyBird(par)) {
           som_HIT.play()
-          mudaParaTela(Telas.INICIO)
+          mudaParaTela(Telas.GAMEOVER)
           return
         }
 
@@ -257,7 +257,30 @@ const mensagemGetReady = {
   }
 }
 
-function criaPlacar () {
+// Tela de get ready
+const mensagemGameOver = {
+  spritesX: 134,
+  spritesY: 153,
+  largura: 226,
+  altura: 200,
+  x: (canvas.width / 2) - 226 /2,
+  y: 50,
+  desenha() {
+    contexto.drawImage(
+      sprites,
+      mensagemGameOver.spritesX, mensagemGameOver.spritesY,
+      mensagemGameOver.largura, mensagemGameOver.altura,
+      mensagemGameOver.x, mensagemGameOver.y,
+      mensagemGameOver.largura, mensagemGameOver.altura
+    )
+  },
+  atualiza() {
+    globais.placar.atualiza()
+  }
+}
+
+// Placar de pontos
+function criaPlacar() {
   const placar = {
     pontuacao: 0,
     desenha() {
@@ -267,11 +290,59 @@ function criaPlacar () {
       contexto.fillText(`Pontuação: ${placar.pontuacao}`, canvas.width - 10, 35)
     },
     atualiza() {  
-
+      contexto.font = '35px "VT323"'
+      contexto.textAlign = 'right'
+      contexto.fillStyle = '#000'
+      contexto.fillText(placar.pontuacao, canvas.width - 70, 147)
     }
   }
   return placar
 }
+
+// Medalhas
+const medalha = {
+  spritesX: 0,
+  spritesY: 78,
+  largura: 44,
+  altura: 44,
+  x: 73,
+  y: 136,
+  medalhas: [
+    { spriteX: 0, spriteY: 78 },
+    { spriteX: 48, spriteY: 124 },
+    { spriteX: 48, spriteY: 78 },
+    { spriteX: 0, spriteY: 124 }
+  ],
+  pontosAcumulado: 0,
+  tipoMedalha: 0,
+  atualizaMedalha() {
+    const totalDePontos = medalha.pontosAcumulado + globais.placar.pontuacao
+
+
+    if(totalDePontos <= 10) {
+      const baseTipoMedalha = 1
+      const incrementoMedalha = baseTipoMedalha + medalha.tipoMedalha
+      const baseMostramedalha = medalha.medalhas.length
+      medalha.tipoMedalha = incrementoMedalha % baseMostramedalha
+      console.log(this.pontosAcumulado)
+    }
+    
+  },
+  desenha() {
+    const { spriteX, spriteY } = medalha.medalhas[medalha.tipoMedalha]
+    
+    if(medalha.atualizaMedalha()) {
+      contexto.drawImage(
+        sprites,
+        spriteX, spriteY,
+        medalha.largura, medalha.altura,
+        medalha.x, medalha.y,
+        medalha.largura, medalha.altura
+      )
+    }
+  }
+}
+
 
 //
 // Telas
@@ -326,7 +397,21 @@ Telas.JOGO = {
     globais.flappyBird.atualiza()
     globais.chao.atualiza()
     globais.canos.atualiza()
-    globais.placar.atualiza()
+  }
+}
+
+Telas.GAMEOVER = {
+  desenha() {
+    planoDeFundo.desenha()
+    mensagemGameOver.desenha()
+    globais.chao.desenha()
+    medalha.desenha()
+  },
+  atualiza() {
+    mensagemGameOver.atualiza()
+  },
+  click() {
+    mudaParaTela(Telas.INICIO)
   }
 }
 
