@@ -83,7 +83,6 @@ function fazColisao(flappyBird, chao) {
   if(flappyBirdY >= chaoY) {
     return true
   }
-  return false
 }
 
 // Passaro
@@ -194,6 +193,10 @@ function criaCanos() {
     temColisaoComOFlappyBird(par) {
       const cabecaDoFlappy = globais.flappyBird.y
       const peDoFlappy = globais.flappyBird.y + globais.flappyBird.altura
+      
+      if(globais.flappyBird.x == par.x) {
+        globais.placar.pontuacao += 1
+      }
 
       if(globais.flappyBird.x >= par.x) {
         if(cabecaDoFlappy <= par.canoCeu.y) {
@@ -204,7 +207,6 @@ function criaCanos() {
           return true
         }
       }
-      return false
     },
     pares: [],
     atualiza() {
@@ -255,6 +257,22 @@ const mensagemGetReady = {
   }
 }
 
+function criaPlacar () {
+  const placar = {
+    pontuacao: 0,
+    desenha() {
+      contexto.font = '35px "VT323"'
+      contexto.textAlign = 'right'
+      contexto.fillStyle = '#fff'
+      contexto.fillText(`Pontuação: ${placar.pontuacao}`, canvas.width - 10, 35)
+    },
+    atualiza() {  
+
+    }
+  }
+  return placar
+}
+
 //
 // Telas
 //
@@ -291,9 +309,13 @@ const Telas = {
 }
 
 Telas.JOGO = {
+  inicializa() {
+    globais.placar = criaPlacar()
+  },
   desenha() {
     planoDeFundo.desenha()
     globais.canos.desenha()
+    globais.placar.desenha()
     globais.flappyBird.desenha()
     globais.chao.desenha()
   },
@@ -304,6 +326,7 @@ Telas.JOGO = {
     globais.flappyBird.atualiza()
     globais.chao.atualiza()
     globais.canos.atualiza()
+    globais.placar.atualiza()
   }
 }
 
