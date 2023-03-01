@@ -94,9 +94,9 @@ function criaFlappyBird() {
     altura: 24,
     x: 10,
     y: 50,
-    gravidade: 0.25,
+    gravidade: 0.15,
     velocidade: 0,
-    pulo: 4.6,
+    pulo: 3.6,
     atualiza() {
       if(fazColisao(flappyBird, globais.chao)) {
         som_HIT.play()
@@ -192,7 +192,7 @@ function criaCanos() {
     },
     temColisaoComOFlappyBird(par) {
       const cabecaDoFlappy = globais.flappyBird.y
-      const peDoFlappy = globais.flappyBird.y + globais.flappyBird.altura
+      const peDoFlappy = globais.flappyBird.y + (globais.flappyBird.altura - 5)
       
       if(globais.flappyBird.x == par.x) {
         globais.placar.pontuacao += 1
@@ -316,15 +316,15 @@ const medalha = {
   pontosAcumulado: 0,
   tipoMedalha: 0,
   atualizaMedalha() {
-    const totalDePontos = medalha.pontosAcumulado + globais.placar.pontuacao
+    const totalDePontos = globais.placar.pontuacao
 
 
-    if(totalDePontos <= 10) {
+    if(totalDePontos) {
       const baseTipoMedalha = 1
       const incrementoMedalha = baseTipoMedalha + medalha.tipoMedalha
       const baseMostramedalha = medalha.medalhas.length
       medalha.tipoMedalha = incrementoMedalha % baseMostramedalha
-      console.log(this.pontosAcumulado)
+      console.log(medalha.tipoMedalha)
     }
     
   },
