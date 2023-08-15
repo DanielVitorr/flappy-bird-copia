@@ -94,7 +94,7 @@ function criaFlappyBird() {
     altura: 24,
     x: 10,
     y: 50,
-    gravidade: 0.15,
+    gravidade: 0.12,
     velocidade: 0,
     pulo: 3.6,
     atualiza() {
